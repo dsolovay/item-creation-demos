@@ -8,6 +8,7 @@ namespace ItemCreation
 {
   using FluentAssertions;
   using Sitecore.Data;
+  using Sitecore.Data.Items;
   using Sitecore.Globalization;
   using Sitecore.Publishing.Explanations;
   using Sitecore.Publishing.Pipelines.PublishItem;
@@ -38,6 +39,60 @@ namespace ItemCreation
     {
       //Database db = new Database(); Private constructor
       Database db = Sitecore.Configuration.Factory.GetDatabase("master");
+
+      db.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void DbShouldBeSingleton()
+    {
+      Database db1 = Sitecore.Configuration.Factory.GetDatabase("master");
+      Database db2 = Sitecore.Configuration.Factory.GetDatabase("master");
+
+      db1.Should().BeSameAs(db2);
+    }
+
+    [Fact]
+    public void CanCreateItem()
+    {
+      ItemData itemData;
+      var itemID = GetItemData(out itemData);
+
+      Database db = Sitecore.Configuration.Factory.GetDatabase("master");
+
+      Item item = new Item(itemID, itemData, db);
+
+      item.Should().NotBeNull();
+
+    }
+
+    [Fact]
+    public void CanCreateChildItem()
+    {
+      ItemData itemData;
+      var itemID = GetItemData(out itemData);
+
+      Database db = Sitecore.Configuration.Factory.GetDatabase("master");
+
+      Item item = new Item(itemID, itemData, db);
+
+      item.Add("child", new TemplateID(item.TemplateID));
+
+    }
+
+    private static ID GetItemData(out ItemData itemData)
+    {
+      ID itemID = ID.NewID;
+      string itemName = "name";
+      ID templateID = ID.NewID;
+      ID branchId = ID.Null;
+      ItemDefinition definition = new ItemDefinition(itemID, itemName, templateID, branchId);
+
+      Language language = Language.Invariant;
+      Version version = Version.Parse(1);
+      FieldList fields = new FieldList();
+      itemData = new ItemData(definition, language, version, fields);
+      return itemID;
     }
   }
 }

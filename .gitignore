@@ -258,3 +258,7 @@ paket-files/
 
 # Libraries
 lib/
+
+# Sitecore
+license.xml
+
