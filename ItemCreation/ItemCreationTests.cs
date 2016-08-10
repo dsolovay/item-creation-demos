@@ -67,7 +67,7 @@ namespace ItemCreation
     }
 
     [Fact]
-    public void CanCreateChildItem()
+    public void Add_CalledOnSyntheticItem_ThrowsLicenseException()
     {
       ItemData itemData;
       var itemID = GetItemData(out itemData);
@@ -76,7 +76,9 @@ namespace ItemCreation
 
       Item item = new Item(itemID, itemData, db);
 
-      item.Add("child", new TemplateID(item.TemplateID));
+      Action addChild = () => item.Add("child", new TemplateID(item.TemplateID));
+
+      addChild.ShouldThrowExactly<Sitecore.SecurityModel.License.LicenseException>();
 
     }
 
