@@ -56,21 +56,38 @@ namespace ItemCreation
     public void CanCreateItem()
     {
       ItemData itemData;
-      var itemID = GetItemData(out itemData);
+      var itemID = MakeItemData(out itemData, new FieldList());
 
       Database db = Sitecore.Configuration.Factory.GetDatabase("master");
 
       Item item = new Item(itemID, itemData, db);
 
       item.Should().NotBeNull();
+    }
 
+    [Fact]
+    public void CanAccessFields()
+    {
+      ItemData itemData;
+      ID field1 = ID.NewID;
+      ID field2= ID.NewID;
+      var fieldList = new FieldList {{field1, "value 1"}, { field2, "value 2"}};
+      var itemID = MakeItemData(out itemData, fieldList);
+
+      Database db = Sitecore.Configuration.Factory.GetDatabase("master");
+
+      Item item = new Item(itemID, itemData, db);
+
+      item.Should().NotBeNull();
+      item[field1].Should().Be("value 1");
+      item[field2].Should().Be("value 2");
     }
 
     [Fact]
     public void Add_CalledOnSyntheticItem_ThrowsLicenseException()
     {
       ItemData itemData;
-      var itemID = GetItemData(out itemData);
+      var itemID = MakeItemData(out itemData, new FieldList());
 
       Database db = Sitecore.Configuration.Factory.GetDatabase("master");
 
@@ -82,7 +99,7 @@ namespace ItemCreation
 
     }
 
-    private static ID GetItemData(out ItemData itemData)
+    private static ID MakeItemData(out ItemData itemData, FieldList fieldList)
     {
       ID itemID = ID.NewID;
       string itemName = "name";
@@ -92,8 +109,7 @@ namespace ItemCreation
 
       Language language = Language.Invariant;
       Version version = Version.Parse(1);
-      FieldList fields = new FieldList();
-      itemData = new ItemData(definition, language, version, fields);
+      itemData = new ItemData(definition, language, version, fieldList);
       return itemID;
     }
   }

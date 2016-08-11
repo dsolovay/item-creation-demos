@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCreation", "ItemCreatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeDbDemo", "FakeDbDemo\FakeDbDemo.csproj", "{A32CF04F-F1AD-4A72-BB98-9B84E4938231}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemCreation82", "ItemCreation82\ItemCreation82.csproj", "{2A9B6D18-8ACA-4FE8-BDBD-A9C440BEBD18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A32CF04F-F1AD-4A72-BB98-9B84E4938231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A32CF04F-F1AD-4A72-BB98-9B84E4938231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A32CF04F-F1AD-4A72-BB98-9B84E4938231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A9B6D18-8ACA-4FE8-BDBD-A9C440BEBD18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A9B6D18-8ACA-4FE8-BDBD-A9C440BEBD18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A9B6D18-8ACA-4FE8-BDBD-A9C440BEBD18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A9B6D18-8ACA-4FE8-BDBD-A9C440BEBD18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
