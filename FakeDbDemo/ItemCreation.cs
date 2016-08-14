@@ -26,8 +26,9 @@ namespace FakeDbDemo
         db.Add(
           new DbItem("home")
           {
-            {"Title", "Hello"}
+                   {"Title", "Hello"}
           });
+
         var item = db.GetItem("/sitecore/content/home");
 
         item["Title"].Should().Be("Hello");
@@ -42,12 +43,16 @@ namespace FakeDbDemo
     {
       using (var db = new Db())
       {
-        db.Add(new DbItem("parent")); 
+        db.Add(new DbItem("parent"));
         var item = db.GetItem("/sitecore/content/parent");
 
         item.Add("child", new TemplateID(item.TemplateID));
 
         db.GetItem("/sitecore/content/parent/child").Should().NotBeNull();
+
+        db.Database.SelectSingleItem("/sitecore/content/#parent#/#child#").Should().NotBeNull();
+        db.Database.SelectItems("/sitecore/content/#parent#/#child#").Length.Should().Be(1);
+
 
       }
     }
@@ -65,9 +70,9 @@ namespace FakeDbDemo
         var item = db.GetItem("/sitecore/content/home");
 
         item["Title"].Should().Be("Hello");
-        
+
         string firstRevision = item[FieldIDs.Revision];
- 
+
         Action editItem = () => item["Title"] = "Goodbye";
 
         editItem.ShouldThrowExactly<Sitecore.Exceptions.EditingNotAllowedException>("because item is not in editing mode");
@@ -84,6 +89,6 @@ namespace FakeDbDemo
       }
     }
 
-    
+
   }
 }
