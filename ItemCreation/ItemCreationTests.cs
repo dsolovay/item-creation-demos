@@ -1,22 +1,99 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentAssertions;
+using NSubstitute;
+using Sitecore.Configuration;
+using Sitecore.Data;
+using Sitecore.Data.Items;
+using Sitecore.Data.Managers;
+using Sitecore.Globalization;
+using Sitecore.Pipelines.InsertRenderings.Processors;
+using Sitecore.SecurityModel.License;
+using Xunit;
+using Version = Sitecore.Data.Version;
 
 namespace ItemCreation
 {
-    using FluentAssertions;
-    using NSubstitute;
-    using Sitecore.Data;
-    using Sitecore.Data.Items;
-    using Sitecore.Globalization;
-    using Sitecore.Publishing.Explanations;
-    using Sitecore.Publishing.Pipelines.PublishItem;
-    using Xunit;
-
-    public class ItemCreationTests
+	public class ItemCreationTests
     {
+		[Fact]
+		public void HowToCreateAnItem()
+		{
+			// Step 1: Create an ID
+			ID itemId = ID.NewID;
+
+			// Step 2: Create an ItemDefintion object
+			ItemDefinition itemDefinition = new ItemDefinition(itemId, "item name", templateID: ID.NewID, branchId: ID.Null);
+
+			// Step 3: Create some fields
+			ID field1 = ID.NewID;
+			string value1 = "value1";
+			ID field2 = ID.NewID;
+			string value2 = "value2";
+
+			// Step 4: Create an ItemData object
+
+			FieldList fields = new FieldList {{field1, value1}, {field2, value2}};
+			ItemData itemData = new ItemData(itemDefinition, Language.Current, Version.First, fields);
+
+			// Step 5: Get a Database object. This requires an App.Config entry
+			Database database = Factory.GetDatabase("master");
+
+			// Step 6: Create the item
+			Item item = new Item(itemId, itemData, database);
+
+			// Step 7: Profit!
+			item.Should().NotBeNull();
+			item.Name.Should().Be("item name");
+			item.Fields.Count.Should().Be(2);
+			item[field1].Should().Be(value1);
+			item.Fields[field2].Value.Should().Be(value2);
+
+			// But cannot add children...
+			Action addChild = () => item.Add("child", new TemplateID(ID.NewID));
+			addChild.ShouldThrowExactly<LicenseException>();
+
+			// Access fields by name requires the TemplateManager
+
+		}
+
+		[Fact]
+		public void CanWeMakeATemplateManager()
+		{
+			Item item = GetItem();
+			ID someId = ID.NewID;
+
+			// next creating a field
+			TemplateManager.GetFieldId("some field", someId, item.Database).Should().BeNull();
+		}
+
+		private Item GetItem()
+		{ 
+				// Step 1: Create an ID
+				ID itemId = ID.NewID;
+
+				// Step 2: Create an ItemDefintion object
+				ItemDefinition itemDefinition = new ItemDefinition(itemId, "item name", templateID: ID.NewID, branchId: ID.Null);
+
+				// Step 3: Create some fields
+				ID field1 = ID.NewID;
+				string value1 = "value1";
+				ID field2 = ID.NewID;
+				string value2 = "value2";
+
+				// Step 4: Create an ItemData object
+
+				FieldList fields = new FieldList { { field1, value1 }, { field2, value2 } };
+				ItemData itemData = new ItemData(itemDefinition, Language.Current, Version.First, fields);
+
+				// Step 5: Get a Database object. This requires an App.Config entry
+				Database database = Factory.GetDatabase("master");
+
+				// Step 6: Create the item
+				Item item = new Item(itemId, itemData, database);
+			return item;
+
+		}
+
         [Fact]
         public void CanCreateItemData()
         {

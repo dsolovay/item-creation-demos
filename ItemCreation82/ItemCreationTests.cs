@@ -85,8 +85,6 @@ namespace ItemCreation82
       Item item1 = Substitute.ForPartsOf<Item>(itemId1, data1, database);
       Item item2 = Substitute.ForPartsOf<Item>(itemId2, data2, database);
 
-      //item1.When(x => x.Add(Arg.Any<string>(), Arg.Any<TemplateID>())).DoNotCallBase();
-      
       item1.Add(Arg.Any<string>(), Arg.Any<TemplateID>()).Returns(item2);
  
 
