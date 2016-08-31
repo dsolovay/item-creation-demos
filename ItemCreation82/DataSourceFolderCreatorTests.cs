@@ -22,10 +22,8 @@ namespace ItemCreation82
 		{
 			var sut = new DataSourceCreatorProcessor();
 			var db = Substitute.For<Database>();
-			Item renderingItem = MakeItem(db, ID.NewID, "some rendering item");
-			ItemPath itemPath = Substitute.For<ItemPath>(renderingItem);
-			renderingItem.Paths.Returns(itemPath);
-			renderingItem.Paths.FullPath.Returns("/some/path");
+			Item renderingItem = MakeItem(db, ID.NewID, "some rendering item", "/some/path");
+
 		 
 			GetRenderingDatasourceArgs args = new GetRenderingDatasourceArgs(renderingItem, db);
 
@@ -35,11 +33,14 @@ namespace ItemCreation82
 
 		}
 
-		private Item MakeItem(Database db, ID id, string name)
+		private Item MakeItem(Database db, ID id, string name, string path)
 		{
 			ItemData data = new ItemData(new ItemDefinition(id, name, ID.Null, ID.Null), Language.Current, Version.First,
 				new FieldList()); 
-			return Substitute.For<Item>(id, data, db);
+			var item = Substitute.For<Item>(id, data, db);
+			item.Paths.Returns(Substitute.For<ItemPath>(item));
+			item.Paths.FullPath.Returns(path);
+			return item;
 		}
 	}
 
