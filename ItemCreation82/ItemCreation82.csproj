@@ -51,8 +51,12 @@
       <HintPath>..\packages\NSubstitute.1.10.0.0\lib\net45\NSubstitute.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=3.49.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoFixture.3.49.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture, Version=3.50.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.3.50.1\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ploeh.AutoFixture.Xunit, Version=3.50.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.Xunit.3.50.1\lib\net40\Ploeh.AutoFixture.Xunit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Sitecore.Kernel">
@@ -85,8 +89,13 @@
       <HintPath>..\packages\xunit.extensibility.execution.2.1.0\lib\net45\xunit.execution.desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="xunit.extensions, Version=1.8.0.1549, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensions.1.8.0.1549\lib\xunit.extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSourceFolderCreatorTests.cs" />
     <Compile Include="ItemCreationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
