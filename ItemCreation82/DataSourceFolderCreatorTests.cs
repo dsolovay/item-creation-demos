@@ -25,7 +25,7 @@ namespace ItemCreation82
 		{
 			var sut = new DataSourceCreatorProcessor();
 			var db = Substitute.For<Database>();
-			Item renderingItem = MakeItem(db, ID.NewID, "some rendering item", "/some/path", ID.Null);
+			Item renderingItem = MakeItem(ID.NewID, "some rendering item", ID.NewID, db);
 			renderingItem.GetChildren().Returns(new ChildList(renderingItem, new ItemList()));
 			var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
@@ -40,12 +40,9 @@ namespace ItemCreation82
 		{
 			var sut = new DataSourceCreatorProcessor();
 			var db = Substitute.For<Database>();
-			Item renderingItem = MakeItem(db, ID.NewID, "some rendering item", "/some/path", ID.NewID);
-			Item childItem = MakeItem(db, ID.NewID, "Items", "/some/path", TemplateIDs.Folder);
+			Item renderingItem = MakeItem(ID.NewID, "some rendering item", ID.NewID, db);
+			Item childItem = MakeItem(ID.NewID, "Items", TemplateIDs.Folder, db);
 			renderingItem.GetChildren().Returns(new ChildList(renderingItem, new ItemList {childItem}));
-			renderingItem.GetChildren().Count.Should().Be(1);
-			renderingItem.GetChildren().First().Name.Should().Be("Items");
-
 			var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
 			sut.Process(args);
@@ -54,7 +51,7 @@ namespace ItemCreation82
 
 		}
 
-		private Item MakeItem(Database db, ID id, string name, string path, ID templateId)
+		private Item MakeItem(ID id, string name, ID templateId, Database db)
 		{
 			ItemData data = new ItemData(new ItemDefinition(id, name, templateId, ID.Null), Language.Current, Version.First,
 				new FieldList()); 
@@ -62,7 +59,6 @@ namespace ItemCreation82
 			item.Name.Returns(name);
 			item.TemplateID.Returns(templateId);
 			item.Paths.Returns(Substitute.For<ItemPath>(item));
-			item.Paths.FullPath.Returns(path);
 			return item;
 		}
 	}
