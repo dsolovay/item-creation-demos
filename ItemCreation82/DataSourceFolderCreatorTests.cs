@@ -26,6 +26,7 @@ namespace ItemCreation82
 			var sut = new DataSourceCreatorProcessor();
 			var db = Substitute.For<Database>();
 			Item renderingItem = MakeItem(db, ID.NewID, "some rendering item", "/some/path", ID.Null);
+			renderingItem.GetChildren().Returns(new ChildList(renderingItem, new ItemList()));
 			var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
 			sut.Process(args);
@@ -59,6 +60,7 @@ namespace ItemCreation82
 				new FieldList()); 
 			var item = Substitute.For<Item>(id, data, db);
 			item.Name.Returns(name);
+			item.TemplateID.Returns(templateId);
 			item.Paths.Returns(Substitute.For<ItemPath>(item));
 			item.Paths.FullPath.Returns(path);
 			return item;
@@ -69,7 +71,10 @@ namespace ItemCreation82
 	{
 		public void Process(GetRenderingDatasourceArgs args)
 		{
-			args.RenderingItem.Add("Items", new TemplateID(TemplateIDs.Folder));
+			var renderingItem = args.RenderingItem;
+
+			if (!renderingItem.GetChildren().Any(item => item.Name== "Items" && item.TemplateID == TemplateIDs.Folder))
+				renderingItem.Add("Items", new TemplateID(TemplateIDs.Folder));
 		}
 	}
 }
