@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using System.Linq;
 using NSubstitute;
-using NSubstitute.Exceptions;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoNSubstitute;
+using Ploeh.AutoFixture.Xunit2;
 using Sitecore;
 using Sitecore.Collections;
 using Sitecore.Data;
-using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.Pipelines.GetRenderingDatasource;
@@ -20,48 +16,53 @@ namespace ItemCreation82
 {
 	public class DataSourceFolderCreatorTests
 	{
-		[Fact]
-		public void Process_ItemFolderMissing_CreatesIt()
+		[Theory, AutoNSubData]
+		public void Process_ItemFolderMissing_CreatesIt(DataSourceCreatorProcessor sut, [Substitute]Database db)
 		{
-			var sut = new DataSourceCreatorProcessor();
-			var db = Substitute.For<Database>();
-			Item renderingItem = MakeItem(ID.NewID, "some rendering item", ID.NewID, db);
+			Item renderingItem = MakeSubstituteItem(ID.NewID, "some rendering item", ID.NewID, db);
 			renderingItem.GetChildren().Returns(new ChildList(renderingItem, new ItemList()));
 			var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
 			sut.Process(args);
 
 			renderingItem.Received().Add("Items", new TemplateID(TemplateIDs.Folder));
-
 		}
 
-		[Fact]
-		public void Process_ItemFolderPresent_DoesNotCreateNewOne()
+		[Theory, AutoNSubData]
+		public void Process_ItemFolderPresent_DoesNotCreateNewOne(DataSourceCreatorProcessor sut, [Substitute]Database db)
 		{
-			var sut = new DataSourceCreatorProcessor();
-			var db = Substitute.For<Database>();
-			Item renderingItem = MakeItem(ID.NewID, "some rendering item", ID.NewID, db);
-			Item childItem = MakeItem(ID.NewID, "Items", TemplateIDs.Folder, db);
+			Item renderingItem = MakeSubstituteItem(ID.NewID, "some rendering item", ID.NewID, db);
+			Item childItem = MakeSubstituteItem(ID.NewID, "Items", TemplateIDs.Folder, db);
 			renderingItem.GetChildren().Returns(new ChildList(renderingItem, new ItemList {childItem}));
 			var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
 			sut.Process(args);
 
 			renderingItem.DidNotReceive().Add("Items", new TemplateID(TemplateIDs.Folder));
-
 		}
 
-		private Item MakeItem(ID id, string name, ID templateId, Database db)
+		private Item MakeSubstituteItem(ID id, string name, ID templateId, Database db)
 		{
-			ItemData data = new ItemData(new ItemDefinition(id, name, templateId, ID.Null), Language.Current, Version.First,
+			var definition = new ItemDefinition(id, name, templateId, ID.Null);
+			var data = new ItemData(definition, Language.Current, Version.First,
 				new FieldList()); 
 			var item = Substitute.For<Item>(id, data, db);
+
 			item.Name.Returns(name);
 			item.TemplateID.Returns(templateId);
 			item.Paths.Returns(Substitute.For<ItemPath>(item));
 			return item;
 		}
 	}
+
+	public class AutoNSubDataAttribute : AutoDataAttribute
+	{
+		public AutoNSubDataAttribute() : base(new Fixture().Customize(new AutoNSubstituteCustomization()))
+		{
+			
+		}
+	}
+	
 
 	public class DataSourceCreatorProcessor
 	{
@@ -74,4 +75,3 @@ namespace ItemCreation82
 		}
 	}
 }
-
