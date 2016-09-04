@@ -36,7 +36,7 @@ namespace ItemCreation82
 
 			sut.Process(args);
 
-			renderingItem.DidNotReceive().Add("Items", new TemplateID(TemplateIDs.Folder));
+			renderingItem.DidNotReceiveWithAnyArgs().Add("", new TemplateID());
 		}
 	}
 }
