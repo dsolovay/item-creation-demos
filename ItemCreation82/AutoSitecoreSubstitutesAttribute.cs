@@ -15,8 +15,10 @@ namespace ItemCreation82
 	/// Database object is "Frozen" (see http://blog.ploeh.dk/2010/03/17/AutoFixtureFreeze/)
 	/// Extends AutoData with NSubstitute customization.
 	/// 
-	/// Item fields values, including ID, Name, TemplateID, and children, must be set 
-	/// on the item afterwards.
+	/// Item fields values such as Name, TemplateID, and method results, such as GetChildren, must be set 
+	/// on the Substitute Item in test code.
+	/// 
+	/// Item ID field is not virtual, so this is created in the SubstituteItemFactory method.
 	/// </summary>
 	public class AutoSitecoreSubstitutesAttribute : AutoDataAttribute
 	{
@@ -27,9 +29,10 @@ namespace ItemCreation82
 
 			Func<Item> substituteItemFactory = () =>
 			{
-				ItemDefinition definition = new ItemDefinition(ID.Null, string.Empty, ID.Null, ID.Null);
+        ID itemId = ID.NewID;
+				ItemDefinition definition = new ItemDefinition(itemId, string.Empty, ID.Null, ID.Null);
 				ItemData data = new ItemData(definition, Language.Current, Version.First, new FieldList());
-				Item item = Substitute.For<Item>(ID.Null, data, db);
+				Item item = Substitute.For<Item>(itemId, data, db);
 				ItemPath itemPath = Substitute.For<ItemPath>(item);
 				item.Paths.Returns(itemPath);
 				return item;
