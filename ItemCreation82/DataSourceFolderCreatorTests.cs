@@ -16,7 +16,7 @@ namespace ItemCreation82
 	{
 
 		[Theory, AutoSitecoreSubstitutes]
-		public void Processor_FolderMissing_CreatesIt(DataSourceFolderCreator sut, Database db, Item renderingItem)
+		public void Processor_ItemsFolderMissing_Creates(DataSourceFolderCreator sut, Database db, Item renderingItem)
 		{
 			renderingItem.SetChildren(new ItemList());
 			var args = new GetRenderingDatasourceArgs(renderingItem, db);
@@ -27,7 +27,7 @@ namespace ItemCreation82
 		}
 
 		[Theory, AutoSitecoreSubstitutes]
-		public void Processor_FolderPresent_DoesNotCreateIt(DataSourceFolderCreator sut, Database db, Item renderingItem, Item folderItem)
+		public void Processor_ItemsFolderPresent_DoesNotCreate(DataSourceFolderCreator sut, Database db, Item renderingItem, Item folderItem)
 		{
 			folderItem.Name.Returns("Items");
 			folderItem.TemplateID.Returns(TemplateIDs.Folder);
