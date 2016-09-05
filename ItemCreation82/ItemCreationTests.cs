@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sitecore.Configuration;
 
 namespace ItemCreation82
 {
@@ -18,6 +19,7 @@ namespace ItemCreation82
 
   public class ItemCreationTests
   {
+   
     [Fact]
     public void CanCreateItem()
     {
