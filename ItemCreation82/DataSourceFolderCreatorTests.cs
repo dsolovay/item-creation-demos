@@ -12,31 +12,31 @@ namespace ItemCreation82
 {
 
 
-	public class DataSourceFolderCreatorTests
-	{
+  public class DataSourceFolderCreatorTests
+  {
 
-		[Theory, AutoSitecoreSubstitutes]
-		public void Processor_ItemsFolderMissing_Creates(DataSourceFolderCreator sut, Database db, Item renderingItem)
-		{
-			renderingItem.SetChildren(new ItemList());
-			var args = new GetRenderingDatasourceArgs(renderingItem, db);
+    [Theory, AutoSitecoreData]
+    public void Processor_ItemsFolderMissing_Creates(DataSourceFolderCreator sut, Database db, Item renderingItem)
+    {
+      renderingItem.SetChildren(new ItemList());
+      var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
-			sut.Process(args);
+      sut.Process(args);
 
-			renderingItem.Received().Add("Items", new TemplateID(TemplateIDs.Folder));
-		}
+      renderingItem.Received().Add("Items", new TemplateID(TemplateIDs.Folder));
+    }
 
-		[Theory, AutoSitecoreSubstitutes]
-		public void Processor_ItemsFolderPresent_DoesNotCreate(DataSourceFolderCreator sut, Database db, Item renderingItem, Item folderItem)
-		{
-			folderItem.Name.Returns("Items");
-			folderItem.TemplateID.Returns(TemplateIDs.Folder);
-			renderingItem.SetChildren(new ItemList {folderItem});
-			var args = new GetRenderingDatasourceArgs(renderingItem, db);
+    [Theory, AutoSitecoreData]
+    public void Processor_ItemsFolderPresent_DoesNotCreate(DataSourceFolderCreator sut, Database db, Item renderingItem, Item folderItem)
+    {
+      folderItem.Name.Returns("Items");
+      folderItem.TemplateID.Returns(TemplateIDs.Folder);
+      renderingItem.SetChildren(new ItemList { folderItem });
+      var args = new GetRenderingDatasourceArgs(renderingItem, db);
 
-			sut.Process(args);
+      sut.Process(args);
 
-			renderingItem.DidNotReceiveWithAnyArgs().Add("", new TemplateID());
-		}
-	}
+      renderingItem.DidNotReceiveWithAnyArgs().Add("", new TemplateID());
+    }
+  }
 }
